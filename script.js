@@ -15,31 +15,35 @@ identificador deve ser gerado de forma automática
 let cars = [];
 let id = 1;
 
-function menu() {
-  let action = prompt('O que deseja fazer? 1 - Adicionar veículo / 2 - Ver veículos / 3 - Procurar pela marca / 4 - Atualizar veículo / 5 - Sair')
+ function menu() {
+   let action = prompt('O que deseja fazer? 1 - Adicionar veículo / 2 - Ver veículos / 3 - Procurar pela marca / 4 - Atualizar veículo / 5 - Remover um veículo / 6 - Sair')
 
-  switch (action) {
-    case '1':
-      createCar()
-      break
-    case '2':
-      readCars()
-      break
-    case '3':
-      filteredCars()
-      break
-    case '4':
-      updateCars()
-      break
-    case '5':
-      console.log('Saindo..')
-      break
-    default:
-      console.log('Opção inválida!')
-      menu()
-  }
-}
-menu()
+   switch (action) {
+     case '1':
+       createCar()
+       break
+     case '2':
+       readCars()
+       break
+     case '3':
+       filterCars()
+       break
+     case '4':
+       updateCars()
+       break
+     case '5':
+        remove()
+        break
+     case '6':
+       alert('Saindo..')
+       break
+     default:
+       alert('Opção inválida!')
+       menu()
+   }
+ }
+ menu()
+
 
 function createCar() {
   const modelo = prompt("Modelo do carro:")
@@ -65,17 +69,18 @@ Preço: R$40.000
 
 function readCars() {
   if (cars.length === 0) {
-    document.write('Nenhum carro cadastrado.')
+    alert('Nenhum carro cadastrado.')
   } else {
-    document.write('Carros cadastrados:')
+    let carList = ('Carros cadastrados: ')
+
     cars.forEach((car) => {
-      document.write(`ID: ${car.id} | Modelo: ${car.modelo} | Marca: ${car.marca} | Ano: ${car.ano} | Cor: ${car.cor} | Preço: ${car.preco.toFixed(3)}`)
+      carList += `ID: ${car.id} | Modelo: ${car.modelo} | Marca: ${car.marca} | Ano: ${car.ano} | Cor: ${car.cor} | Preço: ${car.preco.toFixed(2)}`
     })
+    alert(carList)
   }
   menu()
 }
   
-
 
 /*
 3 - Crie uma função para filtrar veículos por marca
@@ -87,19 +92,20 @@ ID: 1 | Modelo: Civic| Cor: Azul | Preço: R$40.000
 ID: 1 | Modelo: Civic| Cor: Azul | Preço: R$40.000 
 */
 
-function filteredCars() {
+function filterCars() {
    let marcaFiltrada = prompt("Digite a marca que você procura:")
 
    let carrosFiltrados = cars.filter((car) => car.marca.toLowerCase() === marcaFiltrada.toLowerCase())
 
    if (carrosFiltrados.length > 0) {
-     document.write("Carros encontrados:")
+     let alertFilter = ("Carros encontrados:")
 
      carrosFiltrados.forEach((car) => {
-       document.write(`ID: ${car.id} | Modelo: ${car.modelo} | Cor: ${car.cor} | Preço: R$ ${car.preco.toFixed(3)}`)
+       alertFilter += `ID: ${car.id} | Modelo: ${car.modelo} | Cor: ${car.cor} | Preço: R$ ${car.preco.toFixed(2)}`
      })
+     alert(alertFilter)
    } else {
-     document.write(`Nenhum carro da marca "${marcaFiltrada}" foi encontrado.`)
+     alert(`Nenhum carro da marca "${marcaFiltrada}" foi encontrado.`)
    }
    menu()
 }
@@ -120,15 +126,15 @@ function updateCars () {
   let identifier = parseInt(prompt('Informe o id do carro que deseja atualizar:'))
 
   if (isNaN(identifier)) {
-    document.write('ID inválido. Voltando para o menu inicial..')
+    alert('ID inválido. Voltando para o menu inicial..')
     menu()
     return
   }
 
-  let findedCar = cars.find((car) => car.id === identifier)
+  let carToUpdate = cars.find((car) => car.id === identifier)
 
-  if (!findedCar) {
-    document.write('Veículo não encontardo. Voltando para o menu inicial..')
+  if (!carToUpdate) {
+    alert('Veículo não encontardo. Voltando para o menu inicial..')
     menu()
     return
   }
@@ -136,18 +142,16 @@ function updateCars () {
   const updateColor = prompt('Informe a nova cor do veículo:')
   const updatePrice = parseFloat(prompt('Informe o novo preço do veículo:'))
 
-  if (updateColor) findedCar.cor = updateColor
+  if (updateColor) carToUpdate.cor = updateColor
   if (!isNaN(updatePrice) && updatePrice > 0) {
-    findedCar.preco = updatePrice
+    carToUpdate.preco = updatePrice
   } else {                                           //atualização dos dados
-    document.write('Preço inválido, tente novamente')
+    alert('Preço inválido, tente novamente')
     menu()
     return
   }
 
-  document.write('Atualização concluída!')
-  document.write(`ID: ${findedCar.id} | Modelo: ${findedCar.modelo} | Cor: ${findedCar.cor} | Preço: R$ ${findedCar.preco.toFixed(3)}`)
-
+  alert(`Atualização concluída! ID: ${carToUpdate.id} | Modelo: ${carToUpdate.modelo} | Cor: ${carToUpdate.cor} | Preço: R$ ${carToUpdate.preco.toFixed(2)}`)
   menu()
 }
 
@@ -163,15 +167,20 @@ inicial depois"
 function remove() {
   let idToRemove = parseInt(prompt('Informe o id do carro que deseja deletar:'))
 
-  if (isNaN(identifier)) {
-    document.write('ID inválido. Voltando para o menu inicial..')
+  if (isNaN(idToRemove)) {
+    alert('ID inválido. Voltando para o menu inicial..')
     menu()
     return
   }
 
-  let carToRemove = cars.find((car) => car.id === idToRemove)
+  let carIndex = cars.findIndex((car) => car.id === idToRemove)
 
-  if (!carToRemove) {
-    document.write('Veículo não encontrado.')
+  if (carIndex === -1) {
+    alert('Veículo não encontrado.')
+  } else {
+    cars.splice(carIndex, 1)  //o splice vai deletar 1 item contando a partir do 'carIndex', que foi definido na linha 172
+    alert('Veículo removido com sucesso!')
   }
+
+  menu()
 }
