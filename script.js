@@ -15,19 +15,44 @@ identificador deve ser gerado de forma automática
 let cars = [];
 let id = 1;
 
-function createCar() {
-  const modelo = prompt("Modelo do carro:");
-  const marca = prompt("Marca do carro:");
-  const ano = parseInt(prompt("Ano do carro:"));
-  const cor = prompt("Cor do carro:");
-  const preco = parseFloat(prompt("Preço do carro:"));
+function menu() {
+  let action = prompt('O que deseja fazer? 1 - Adicionar veículo / 2 - Ver veículos / 3 - Procurar pela marca / 4 - Atualizar veículo / 5 - Sair')
 
-  const car = { id: id++, modelo, marca, ano, cor, preco};
-  cars.push(car);
+  switch (action) {
+    case '1':
+      createCar()
+      break
+    case '2':
+      readCars()
+      break
+    case '3':
+      filteredCars()
+      break
+    case '4':
+      updateCars()
+      break
+    case '5':
+      console.log('Saindo..')
+      break
+    default:
+      console.log('Opção inválida!')
+      menu()
+  }
 }
-createCar()
-createCar()
-createCar()
+menu()
+
+function createCar() {
+  const modelo = prompt("Modelo do carro:")
+  const marca = prompt("Marca do carro:")
+  const ano = parseInt(prompt("Ano do carro:"))
+  const cor = prompt("Cor do carro:")
+  const preco = parseFloat(prompt("Preço do carro:"))
+
+  const car = { id: id++, modelo, marca, ano, cor, preco}
+  cars.push(car)
+  menu()
+}
+
 
 /*
 2 - Crie uma função para ler todos os veículos
@@ -39,12 +64,18 @@ Preço: R$40.000
 */
 
 function readCars() {
-  console.log("Carros cadastrados:");
-  cars.forEach((car) => {
-    console.log(`ID: ${car.id} | Modelo: ${car.modelo} | Marca: ${car.marca} | Ano: ${car.ano} | Cor: ${car.cor} | Preço: ${car.preco.toFixed(2)}`)
-  })
+  if (cars.length === 0) {
+    document.write('Nenhum carro cadastrado.')
+  } else {
+    document.write('Carros cadastrados:')
+    cars.forEach((car) => {
+      document.write(`ID: ${car.id} | Modelo: ${car.modelo} | Marca: ${car.marca} | Ano: ${car.ano} | Cor: ${car.cor} | Preço: ${car.preco.toFixed(3)}`)
+    })
+  }
+  menu()
 }
-readCars()
+  
+
 
 /*
 3 - Crie uma função para filtrar veículos por marca
@@ -62,13 +93,85 @@ function filteredCars() {
    let carrosFiltrados = cars.filter((car) => car.marca.toLowerCase() === marcaFiltrada.toLowerCase())
 
    if (carrosFiltrados.length > 0) {
-     console.log("Carros encontrados:")
+     document.write("Carros encontrados:")
 
      carrosFiltrados.forEach((car) => {
-       console.log(`ID: ${car.id} | Modelo: ${car.modelo} | Cor: ${car.cor} | Preço: R$ ${car.preco.toFixed(3)}`)
+       document.write(`ID: ${car.id} | Modelo: ${car.modelo} | Cor: ${car.cor} | Preço: R$ ${car.preco.toFixed(3)}`)
      })
    } else {
-     console.log(`Nenhum carro da marca "${marcaFiltrada}" foi encontrado.`)
+     document.write(`Nenhum carro da marca "${marcaFiltrada}" foi encontrado.`)
    }
+   menu()
 }
-filteredCars()
+
+/*
+4 - Crie uma função para Atualizar veículo
+-> O sistema deve pedir para o usuário digitar o
+IDENTIFICADOR do veículo
+-> O Sistema deve verificar se o veículo existe ou não e
+mostrar a seguinte mensagem caso o veículo não exista:
+"Veículo, não encontrado. O usuário deve voltar para o menu
+inicial depois"
+-> Se o veículo existir, o sistema deve permitir que o usuário
+atualize somente a cor e o preço. 
+*/
+
+function updateCars () {
+  let identifier = parseInt(prompt('Informe o id do carro que deseja atualizar:'))
+
+  if (isNaN(identifier)) {
+    document.write('ID inválido. Voltando para o menu inicial..')
+    menu()
+    return
+  }
+
+  let findedCar = cars.find((car) => car.id === identifier)
+
+  if (!findedCar) {
+    document.write('Veículo não encontardo. Voltando para o menu inicial..')
+    menu()
+    return
+  }
+
+  const updateColor = prompt('Informe a nova cor do veículo:')
+  const updatePrice = parseFloat(prompt('Informe o novo preço do veículo:'))
+
+  if (updateColor) findedCar.cor = updateColor
+  if (!isNaN(updatePrice) && updatePrice > 0) {
+    findedCar.preco = updatePrice
+  } else {                                           //atualização dos dados
+    document.write('Preço inválido, tente novamente')
+    menu()
+    return
+  }
+
+  document.write('Atualização concluída!')
+  document.write(`ID: ${findedCar.id} | Modelo: ${findedCar.modelo} | Cor: ${findedCar.cor} | Preço: R$ ${findedCar.preco.toFixed(3)}`)
+
+  menu()
+}
+
+/*5 - Crie uma função Remover veículo
+->O usuário digitar o IDENTIFICADOR do veículo
+-> O Sistema deve verificar se o veículo existe ou não e
+mostrar a seguinte mensagem caso o veículo não exista:
+"Veículo, não encontrado. O usuário deve voltar para o menu
+inicial depois"
+-> Se o veículo existir, o sistema deve remover o veículo 
+*/
+
+function remove() {
+  let idToRemove = parseInt(prompt('Informe o id do carro que deseja deletar:'))
+
+  if (isNaN(identifier)) {
+    document.write('ID inválido. Voltando para o menu inicial..')
+    menu()
+    return
+  }
+
+  let carToRemove = cars.find((car) => car.id === idToRemove)
+
+  if (!carToRemove) {
+    document.write('Veículo não encontrado.')
+  }
+}
